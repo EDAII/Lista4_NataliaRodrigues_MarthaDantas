@@ -82,8 +82,10 @@ void build_heap() {
 		heapify(i, n);
 }
 
-void heap_sort() {
+void heap_sort(int op) {
 	int size = n;
+	
+	cout << "BUILD HEAP: ";
 	build_heap();
 	
 	print_vector();
@@ -95,19 +97,32 @@ void heap_sort() {
 	}
 }
 
+void menu() {
+	int option;
+	
+	cout << "\n1 - Ver passos do heap sort no vetor;\n";
+	cout << "\n2 - Ver passos do heap sort na arvore;\n";
+	
+	cin >> option;
+	
+	heap_sort(option);
+}
+
 int main() {
 	
 	cout << "\nInsira o tamanho do vetor: ";
 	cin >> n;
 	
 	generate_vector();
-	cout << "\nVetor Desordenado:"
+	cout << "\nVetor:";
 	print_vector();
-	//print_tree(1, 0);
+		
+	cout << "\nArvore: ";
+	print_tree(1, 0);
 	
-	heap_sort();
+	menu();
+	
 	print_vector();
-	//print_tree(1, 0);
 	
 	return 0;
 }
