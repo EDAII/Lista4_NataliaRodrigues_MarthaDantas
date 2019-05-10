@@ -30,27 +30,70 @@ void generate_vector() {
 	random_shuffle(++v.begin(), v.end());
 }
 
-void print_tree(int root, int space){ 
-    if (root > n)  
-        return;  
-  
-    space += COUNT;  
-  
-    print_tree(right(root), space);  
-    
-    cout<<endl;  
-    for (int i = COUNT; i < space; i++)  
-        cout<<" ";  
-    cout << v[root] << "\n";  
-  
-    print_tree(left(root), space);
+int log2(int a) {
+	int i = 1;
+
+	while(a / 2 != 0) {
+		a = a/2;
+		i++;
+	}
+
+	return i;
+}
+
+void print_tree(int size) {
+	int space = log2(size) * 8;
+	int level = 0;
+	int elements;
+	int pos;
+
+	for(int i = 1; i <= size; i++) {
+
+		if(log2(i) > level) {
+			cout << endl;
+			level++;
+			space /= 2;
+			pos = space;
+		}
+
+		for(int j = 0; j < space; j++)
+			cout << " ";
+
+		cout << v.at(i);
+
+		if(level == log2(size))
+			pos = space/2;
+
+		for(int j = 0; j < pos; j++)
+			cout << " ";
+	}
+
+	cout << endl;
 }
 
 void print_vector(int size) {
-	cout << "\n";
 	for(int i = 1; i <= size; i++)
 		cout << v[i] << " ";
 	cout << "\n";
+}
+
+void print(int op, int size) {
+	if(op == VECTOR){
+		cout << "\n";	
+		print_vector(size);
+	}
+	else
+		print_tree(size);
+}
+
+void print_ordened_vector(int pos) {
+	cout << "Ordened vector: ";
+	for(int i = 1; i <= n; i++) {
+		if(i < pos)
+			cout << " _ ";
+		else
+			cout << " " << v.at(i) << " ";
+	}
 }
 
 void swap(int i, int j) {
@@ -59,15 +102,8 @@ void swap(int i, int j) {
 	v[j] = tmp;
 }
 
-void print(int op, int size) {
-	if(op == VECTOR)
-		print_vector(size);
-	else
-		print_tree(1, 0);
-}
-
 void heapify(int i, int size, int op) {
-	cout << "\nHeapify(" << v.at(i) << "):\n"
+	cout << "\nHeapify(" << v.at(i) << "):\n";
 	int largest;
 	
 	int l = left(i);
@@ -83,37 +119,49 @@ void heapify(int i, int size, int op) {
 		
 	if(largest != i) {
 		swap(i, largest);
+		cout << "\n* swap " << v.at(i) << " with " << v.at(largest) << " *\n";
 		print(op, size);
 		heapify(largest, size, op);
 	}
 	else {
+		cout << "\n* no swap *\n"; 
 		print(op, size);
 	}
 }
 
 void build_heap(int op) {
-	for(int i = n/2; i > 0; i--)
+	for(int i = n/2; i > 0; i--) {
+		system("read -p '\nPress Enter to continue...' var");
 		heapify(i, n, op);
+	}
 }
 
 void heap_sort(int op) {
 	int size = n;
 	
-	cout << "\n=======================================================\n";
-	cout << "\t\t\tBUILD HEAP: ";
+	cout << "\t\t\t BUILD HEAP: ";
+	print(op, n);
 	build_heap(op);
 	cout << "\n=======================================================\n";
 	
 	cout << "\t\t\t HEAP SORT: ";
 	for(int i = n; i > 1; --i) {
+		system("read -p '\nPress Enter to continue...' var");
 		cout << "\n\nRemoving " << v.at(1) << endl;
 		swap(1, i);
-		size--;
-		print(op, size);
 		print_ordened_vector(i);
-		cout << "\nRearranging tree to be a heap with heapify:\n";
-		heapify(1, size, op);		
+		size--;
+		cout << endl;
+		print(op, size);
+		system("read -p '\nPress Enter to continue...' var");
+		cout << "\n\nRearranging structure to be a heap with heapify:\n";
+		heapify(1, size, op);	
 	}
+
+	system("read -p '\nPress Enter to continue...' var");
+	cout << "\n\nRemoving " << v.at(1) << endl;
+	print_ordened_vector(1);
+
 	cout << "\n=======================================================\n";
 }
 
@@ -122,13 +170,17 @@ void menu() {
 	
 	cout << "\n1 - Ver passos do heap sort no vetor;\n";
 	cout << "\n2 - Ver passos do heap sort na arvore;\n";
-	
+	cout << "\nDigite sua opcao: ";
+	    
 	cin >> option;
 
-	if(option == VECTOR) cout << "\nVetor: ";
-	else cout << "\nArvore: ";
-	print(option, n);
-	
+	cout << "\n=======================================================\n";
+	cout << "\nVetor Desordenado: ";
+	print_vector(n);
+	cout << "\n=======================================================\n";
+
+	system("read -p '\nPress Enter to continue...\n' var");
+
 	heap_sort(option);
 }
 
