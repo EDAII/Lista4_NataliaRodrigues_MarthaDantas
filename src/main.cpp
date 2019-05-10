@@ -3,6 +3,8 @@
 #include <algorithm>
 
 #define COUNT 5
+#define VECTOR 1
+#define TREE 2
 
 using namespace std;
 
@@ -44,9 +46,9 @@ void print_tree(int root, int space){
     print_tree(left(root), space);
 }
 
-void print_vector() {
+void print_vector(int size) {
 	cout << "\n";
-	for(int i = 1; i <= n; i++)
+	for(int i = 1; i <= size; i++)
 		cout << v[i] << " ";
 	cout << "\n";
 }
@@ -57,7 +59,15 @@ void swap(int i, int j) {
 	v[j] = tmp;
 }
 
-void heapify(int i, int size) {
+void print(int op, int size) {
+	if(op == VECTOR)
+		print_vector(size);
+	else
+		print_tree(1, 0);
+}
+
+void heapify(int i, int size, int op) {
+	cout << "\nHeapify(" << v.at(i) << "):\n"
 	int largest;
 	
 	int l = left(i);
@@ -72,29 +82,39 @@ void heapify(int i, int size) {
 		largest = r;
 		
 	if(largest != i) {
-		swap(i, largest);	
-		heapify(largest, size);
+		swap(i, largest);
+		print(op, size);
+		heapify(largest, size, op);
+	}
+	else {
+		print(op, size);
 	}
 }
 
-void build_heap() {
+void build_heap(int op) {
 	for(int i = n/2; i > 0; i--)
-		heapify(i, n);
+		heapify(i, n, op);
 }
 
 void heap_sort(int op) {
 	int size = n;
 	
-	cout << "BUILD HEAP: ";
-	build_heap();
+	cout << "\n=======================================================\n";
+	cout << "\t\t\tBUILD HEAP: ";
+	build_heap(op);
+	cout << "\n=======================================================\n";
 	
-	print_vector();
-	
+	cout << "\t\t\t HEAP SORT: ";
 	for(int i = n; i > 1; --i) {
+		cout << "\n\nRemoving " << v.at(1) << endl;
 		swap(1, i);
 		size--;
-		heapify(1, size);		
+		print(op, size);
+		print_ordened_vector(i);
+		cout << "\nRearranging tree to be a heap with heapify:\n";
+		heapify(1, size, op);		
 	}
+	cout << "\n=======================================================\n";
 }
 
 void menu() {
@@ -104,6 +124,10 @@ void menu() {
 	cout << "\n2 - Ver passos do heap sort na arvore;\n";
 	
 	cin >> option;
+
+	if(option == VECTOR) cout << "\nVetor: ";
+	else cout << "\nArvore: ";
+	print(option, n);
 	
 	heap_sort(option);
 }
@@ -114,15 +138,7 @@ int main() {
 	cin >> n;
 	
 	generate_vector();
-	cout << "\nVetor:";
-	print_vector();
-		
-	cout << "\nArvore: ";
-	print_tree(1, 0);
-	
 	menu();
-	
-	print_vector();
 	
 	return 0;
 }
